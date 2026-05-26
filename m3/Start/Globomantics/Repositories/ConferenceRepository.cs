@@ -21,6 +21,7 @@ public class ConferenceRepository : IConferenceRepository
               AttendeeCount = 140  
           }
         };
+    private readonly IHttpContextAccessor _Ca;
 
     public IEnumerable<ConferenceModel> GetAll()
     {

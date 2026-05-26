@@ -1,19 +1,20 @@
 ﻿using Globomantics.Models;
 using Globomantics.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace Globomantics.Controllers;
 
+[Authorize]
 public class ConferenceController(IConferenceRepository repo) : Controller {
     private readonly IConferenceRepository repo = repo;
 
     
 
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
         ViewBag.Title = "Organizer - Conference Overview";
-        return View(await repo.GetAll());
+        return View(repo.GetAll());
     }
 
     public IActionResult Add()
@@ -23,10 +24,10 @@ public class ConferenceController(IConferenceRepository repo) : Controller {
     }
 
     [HttpPost]
-    public async Task<IActionResult> Add(ConferenceModel model)
+    public IActionResult Add(ConferenceModel model)
     {
         if (ModelState.IsValid)
-            await repo.Add(model);
+            repo.Add(model);
 
         return RedirectToAction("Index");
     }

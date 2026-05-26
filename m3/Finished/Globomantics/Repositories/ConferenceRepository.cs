@@ -1,49 +1,42 @@
-﻿using Globomantics.Areas.Identity.Data;
-using Globomantics.Data;
-using Globomantics.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Globomantics.Models;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System;
 
 namespace Globomantics.Repositories;
-public class ConferenceRepository(ApplicationDbContext dbContext) : IConferenceRepository {
-    private readonly ApplicationDbContext _DbContext = dbContext;
+public class ConferenceRepository : IConferenceRepository
+{
+    private static List<ConferenceModel> conferences = new() {
+          new ConferenceModel { 
+              Id = 1, 
+              Name = "A Nice Day of Coding", 
+              Location = "Remote", 
+              Start = DateTime.Now, 
+              AttendeeCount = 201 
+          },
+          new ConferenceModel { 
+              Id = 2, 
+              Name = "Hackathon Live", 
+              Location = "New York", 
+              Start = DateTime.Now.AddDays(50), 
+              AttendeeCount = 140  
+          }
+        };
+    private readonly IHttpContextAccessor _Ca;
 
-    
-
-    public async Task<IEnumerable<ConferenceModel>> GetAll()
+    public IEnumerable<ConferenceModel> GetAll()
     {
-        return await _DbContext.Conferences
-            .Select(c => new ConferenceModel { 
-                Id = c.Id, Name = c.Name, Start = c.Start, 
-                Location = c.Location, AttendeeCount = c.AttendeeCount })
-            .ToArrayAsync();
+        return conferences;
     }
 
-    public async Task<ConferenceModel> GetById(int id)
+    public ConferenceModel GetById(int id)
     {
-        var c = await _DbContext.Conferences.FirstAsync(c => c.Id == id);
-        return new ConferenceModel
-        {
-            Id = c.Id,
-            Name = c.Name,
-            Start = c.Start,
-            Location = c.Location,
-            AttendeeCount = c.AttendeeCount
-        };
+        return conferences.First(c => c.Id == id);
     }
 
-    public async Task<int> Add(ConferenceModel model)
+    public int Add(ConferenceModel model)
     {
-        var e = new ConferenceEntity
-        {
-            Name = model.Name,
-            Start = model.Start,
-            Location = model.Location,
-            AttendeeCount = model.AttendeeCount
-        };
-        _DbContext.Conferences.Add(e);
-        await _DbContext.SaveChangesAsync();
-        return e.Id;
+        model.Id = conferences.Max(c => c.Id) + 1;
+        conferences.Add(model);
+        return model.Id;
     }
 }

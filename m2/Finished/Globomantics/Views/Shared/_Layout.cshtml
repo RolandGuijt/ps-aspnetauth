@@ -18,21 +18,9 @@
                 <span class="text-primary">@ViewBag.Title</span>
             </div>
             <div class="col-5">
-                @if (User.Identity != null && User.Identity.IsAuthenticated)
-                {
-                    <div class="float-end">
-                        <span>Hi @User.Identity.Name!</span>
-                        <a asp-controller="Account" asp-action="Logout" class="btn btn-primary">Logout</a>
-                    </div>
-
-                }
-                else
-                {
-                    <div class="float-end">
-                        <span>Login here:</span>
-                        <a asp-controller="Account" asp-action="Login" class="btn btn-primary">Login</a>
-                    </div>                
-                }
+                <div class="float-end">
+                    <partial name="_LoginPartial" />
+                </div>
             </div>
         </div>
         <div>

@@ -1,4 +1,6 @@
 ﻿using Globomantics.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +20,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute("default","{controller=Conference}/{action=Index}/{id?}");
+app.MapControllerRoute("default", "{controller=Conference}/{action=Index}/{id?}");
 
 app.Run();

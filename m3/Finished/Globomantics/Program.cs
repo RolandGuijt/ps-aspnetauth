@@ -1,40 +1,60 @@
-﻿using Globomantics.Areas.Identity.Data;
-using Globomantics.Areas.Identity;
-using Globomantics.Data;
-using Globomantics.Repositories;
+﻿using Globomantics.Repositories;
+using IdentityModel;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
+using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
-
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
-
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
-
-builder.Services.AddAuthentication()
-    .AddGoogle(o =>
-    {
-        o.ClientId = "686977813024-d9i87jqqovj5tu5luks9rk8gl33ck3rb.apps.googleusercontent.com";
-        o.ClientSecret = "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";
-    });
-
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-builder.Services.AddScoped<IEmailSender, EmailSender>();
 
-builder.Services.AddScoped<IConferenceRepository, ConferenceRepository>();
-builder.Services.AddScoped<IProposalRepository, ProposalRepository>();
-builder.Services.AddScoped<IClaimsTransformation, ClaimsTransformer>();
+builder.Services.AddSingleton<IConferenceRepository, ConferenceRepository>();
+builder.Services.AddSingleton<IProposalRepository, ProposalRepository>();
+
+JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
+
+builder.Services.AddAuthentication(o =>
+{
+    o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    o.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+})
+    .AddCookie()
+    .AddOpenIdConnect(options =>
+    {
+        options.Authority = "https://localhost:5000";
+
+        options.ClientId = "globomantics_web";
+        //Store in application secrets
+        options.ClientSecret = "49C1A7E1-0C79-4A89-A3D6-A37998FB86B0";
+        options.Scope.Clear();
+        options.Scope.Add("openid");
+        options.Scope.Add("profile");
+        options.Scope.Add("email");
+        options.Scope.Add("globomantics");
+        options.Scope.Add("globomanticsapi");
+        options.SaveTokens = true;
+        options.ResponseType = "code";
+        options.GetClaimsFromUserInfoEndpoint = true;
+
+        options.ClaimActions.MapUniqueJsonKey("careerstarted", "careerstarted");
+        options.ClaimActions.MapUniqueJsonKey("birthdate", "birthdate");
+        options.ClaimActions.MapUniqueJsonKey("role", "role");
+        options.ClaimActions.MapUniqueJsonKey("permission", "permission");
+
+        options.Events = new OpenIdConnectEvents
+        {
+            OnTokenResponseReceived = r =>
+            {
+                var idToken = r.TokenEndpointResponse.IdToken;
+                return Task.CompletedTask;
+            }
+        };
+
+    });
 
 var app = builder.Build();
 
@@ -45,7 +65,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapRazorPages();
 app.MapControllerRoute("default", "{controller=Conference}/{action=Index}/{id?}");
 
 app.Run();

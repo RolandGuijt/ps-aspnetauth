@@ -1,58 +1,31 @@
-﻿using Globomantics.Areas.Identity.Data;
-using Globomantics.Data;
-using Globomantics.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Globomantics.Models;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Globomantics.Repositories;
 
-public class ProposalRepository(ApplicationDbContext dbContext) : IProposalRepository {
-    private readonly ApplicationDbContext _DbContext = dbContext;
-
-    
-    public async Task<IEnumerable<ProposalModel>> GetAllForConference(int conferenceId)
+public class ProposalRepository : IProposalRepository
+{
+    private static List<ProposalModel> proposals = new() {
+        new ProposalModel { Id = 1, ConferenceId = 1, Title = "Authentication and Authorization in ASP.NET Core", Speaker = "Roland Guijt" },
+        new ProposalModel { Id = 2, ConferenceId = 1, Title = "ASP.NET Core Basics", Speaker = "Alice Waterman" },
+        new ProposalModel { Id = 3, ConferenceId = 2, Title = "Writing CSS Like a Boss", Speaker = "Deborah Midland" },
+    };
+    public IEnumerable<ProposalModel> GetAllForConference(int conferenceId)
     {
-        return await _DbContext.Proposals
-            .Where(p => p.ConferenceId == conferenceId)
-            .Select(p => new ProposalModel
-            {
-                Id = p.Id,
-                ConferenceId = p.ConferenceId,
-                Speaker = p.Speaker,
-                Approved = p.Approved,
-                Title = p.Title
-            })
-            .ToArrayAsync();
+        return proposals.Where(p => p.ConferenceId == conferenceId);
     }
 
-    public async Task<int> Add(ProposalModel model)
+    public int Add(ProposalModel model)
     {
-        var e = new ProposalEntity
-        {
-            ConferenceId = model.ConferenceId,
-            Speaker = model.Speaker,
-            Approved = model.Approved,
-            Title = model.Title
-        };
-        _DbContext.Proposals.Add(e);
-        await _DbContext.SaveChangesAsync();
-        return e.Id;
+        model.Id = proposals.Max(p => p.Id) + 1;
+        proposals.Add(model);
+        return model.Id;
     }
 
-    public async Task<ProposalModel> Approve(int proposalId)
+    public ProposalModel Approve(int proposalId)
     {
-        var proposal = _DbContext.Proposals.First(p => p.Id == proposalId);
+        var proposal = proposals.First(p => p.Id == proposalId);
         proposal.Approved = true;
-        await _DbContext.SaveChangesAsync();
-
-        return new ProposalModel
-        {
-            Id = proposal.Id,
-            Speaker = proposal.Speaker,
-            ConferenceId = proposal.ConferenceId,
-            Approved = proposal.Approved,
-            Title = proposal.Title
-        };
+        return proposal;
     }
 }
