@@ -38,6 +38,9 @@ builder.Services.AddAuthentication(o =>
 
 builder.Services.AddAuthorization(o => 
 {
+    o.AddPolicy("IsAdmin", o => o.RequireAssertion(context =>
+        context.User.IsInRole("admin") ||
+        context.User.HasClaim("permission", "admin")));
     o.AddPolicy("IsOrganizer", o => o.RequireRole("organizer"));
     o.AddPolicy("IsSpeaker", o => o.RequireRole("speaker"));
     o.AddPolicy("CanAddConference", o => o.RequireClaim("permission", "addconference"));

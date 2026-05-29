@@ -3,6 +3,7 @@ using Globomantics.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication;
+using Duende.Bff.DynamicFrontends;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,20 +13,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 builder.Services.AddBff(o => o.ManagementBasePath = "/account")
-    .AddServerSideSessions();
-
-builder.Services.AddAuthentication(o => 
-{ 
-    o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    o.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-    o.DefaultSignOutScheme = OpenIdConnectDefaults.AuthenticationScheme;
-})
-    .AddCookie(o =>
-    {
-        o.Cookie.Name = "__Host-spa";
-        o.Cookie.SameSite = SameSiteMode.Strict;
-    })
-    .AddOpenIdConnect(options =>
+    .ConfigureOpenIdConnect(options =>
      {
          options.Authority = "https://localhost:5000";
 
@@ -42,11 +30,21 @@ builder.Services.AddAuthentication(o =>
          options.ResponseType = "code";
          options.GetClaimsFromUserInfoEndpoint = true;
 
-         options.ClaimActions.MapUniqueJsonKey("careerstarted", "careerstarted");
-         options.ClaimActions.MapUniqueJsonKey("birthdate", "birthdate");
-         options.ClaimActions.MapUniqueJsonKey("role", "role");
-         options.ClaimActions.MapUniqueJsonKey("permission", "permission");
-     });
+         options.ClaimActions.MapAll();
+     })
+    .ConfigureCookies(options =>
+     {
+         options.Cookie.Name = "__Host-spa";
+         options.Cookie.SameSite = SameSiteMode.Strict;
+     })
+    .AddServerSideSessions();
+
+builder.Services.AddAuthentication(o =>
+{
+    o.DefaultScheme = BffAuthenticationSchemes.BffCookie;
+    o.DefaultChallengeScheme = BffAuthenticationSchemes.BffOpenIdConnect;
+    o.DefaultSignOutScheme = BffAuthenticationSchemes.BffOpenIdConnect;
+});
 
 builder.Services.AddSingleton<IConferenceRepository, ConferenceRepository>();
 builder.Services.AddSingleton<IProposalRepository, ProposalRepository>();
