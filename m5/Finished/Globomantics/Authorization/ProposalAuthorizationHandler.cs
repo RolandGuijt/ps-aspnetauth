@@ -1,7 +1,5 @@
 ﻿using Globomantics.Models;
-using Globomantics.Repositories;
-using System.Threading.Tasks;
-using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Globomantics.Authorization;
 

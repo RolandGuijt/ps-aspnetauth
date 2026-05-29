@@ -61,6 +61,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute("default", "{controller=Conference}/{action=Index}/{id?}");
+app.MapControllerRoute("default", 
+    "{controller=Conference}/{action=Index}/{id?}");
 
 app.Run();

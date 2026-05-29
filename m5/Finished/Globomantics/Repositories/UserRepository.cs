@@ -17,13 +17,13 @@ public class UserRepository : IUserRepository
             GoogleId = "101517359495305583936" }
     };
 
-    public UserModel? GetByUsernameAndPassword(string username, string password)
+    public UserModel GetByUsernameAndPassword(string username, string password)
     {
         var user = users.SingleOrDefault(u => u.Name == username && u.Password == password.Sha256());
         return user;
     }
 
-    public UserModel? GetByGoogleId(string googleId)
+    public UserModel GetByGoogleId(string googleId)
     {
         var user = users.SingleOrDefault(u => u.GoogleId == googleId);
         return user;

@@ -36,7 +36,7 @@ public class AccountController(IUserRepository userRepository) : Controller {
    
             new Claim("careerstarted", user.CareerStarted.ToShortDateString()),
             new Claim("permission", user.Permission)
-        };
+        ];
 
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);
@@ -89,7 +89,7 @@ public class AccountController(IUserRepository userRepository) : Controller {
             new Claim(ClaimTypes.Role, user.Role),
             new Claim("careerstarted", user.CareerStarted.ToShortDateString()),
             new Claim("permission", user.Permission)
-        };
+        ];
 
         var identity = new ClaimsIdentity(claims,
             CookieAuthenticationDefaults.AuthenticationScheme);
