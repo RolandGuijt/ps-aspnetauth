@@ -1,8 +1,4 @@
-﻿using Globomantics.Models;
-using Globomantics.Repositories;
-using System;
-
-namespace Globomantics.Client.Models;
+﻿namespace Globomantics.Client.Models;
 public class ConferenceModel
 {
     public int Id { get; set; }

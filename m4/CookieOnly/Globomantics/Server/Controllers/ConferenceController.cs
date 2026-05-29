@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System;
+using Globomantics.Client.Models;
 
 namespace Globomantics.Server.Controllers;
 

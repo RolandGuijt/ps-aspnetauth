@@ -1,16 +1,11 @@
-﻿using Globomantics.Models;
-using Globomantics.Repositories;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System;
+﻿using System.Net.Http.Json;
+using Globomantics.Client.Models;
 
 namespace Globomantics.Client.ApiServices;
 
 public class ConferenceApiService(HttpClient client) : IConferenceApiService {
         private readonly HttpClient _Client = client;
-
         
-
         public async Task<IEnumerable<ConferenceModel>> GetAll()
         {
             return await _Client

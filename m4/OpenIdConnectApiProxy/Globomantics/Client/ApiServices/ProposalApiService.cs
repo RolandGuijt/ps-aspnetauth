@@ -1,16 +1,11 @@
-﻿using Globomantics.Models;
-using Globomantics.Repositories;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System;
+﻿using System.Net.Http.Json;
+using Globomantics.Client.Models;
 
 namespace Globomantics.Client.ApiServices;
 
 public class ProposalApiService(HttpClient client) : IProposalApiService {
         private readonly HttpClient _Client = client;
-
         
-
         public async Task<IEnumerable<ProposalModel>> GetAll(int conferenceId)
         {
             return await _Client.GetFromJsonAsync<IEnumerable<ProposalModel>>($"/api/proposal/{conferenceId}");

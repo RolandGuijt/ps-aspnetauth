@@ -1,8 +1,4 @@
-﻿using Globomantics.Models;
-using Globomantics.Repositories;
-using IdentityProvider.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace IdentityProvider.Areas.Identity.Pages.Account.Manage;
 

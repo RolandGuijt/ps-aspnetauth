@@ -3,12 +3,12 @@ using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Validation;
-using IdentityModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Duende.IdentityModel;
 
 namespace IdentityProvider.Pages.Consent;
 
@@ -22,9 +22,7 @@ public class Index(
     private readonly IIdentityServerInteractionService _interaction = interaction;
     private readonly IEventService _events = events;
     private readonly ILogger<Index> _logger = logger;
-
     
-
     public ViewModel View { get; set; }
         
     [BindProperty]

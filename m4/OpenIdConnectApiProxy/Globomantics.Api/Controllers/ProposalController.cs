@@ -1,9 +1,7 @@
-﻿using Globomantics.Models;
+﻿using Globomantics.Client.Models;
 using Globomantics.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System;
 
 namespace Globomantics.Server.Controllers;
 
@@ -12,8 +10,6 @@ namespace Globomantics.Server.Controllers;
     [Authorize]
     public class ProposalController(IProposalRepository repo) : Controller {
         private readonly IProposalRepository _Repo = repo;
-
-        
 
         [HttpGet("{conferenceId}")]
         public IEnumerable<ProposalModel> GetAll(int conferenceId)

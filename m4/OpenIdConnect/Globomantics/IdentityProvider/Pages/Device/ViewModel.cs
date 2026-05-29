@@ -1,11 +1,4 @@
-﻿using Globomantics.Models;
-using Globomantics.Repositories;
-using IdentityProvider.Models;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System;
-
-namespace IdentityProvider.Pages.Device;
+﻿namespace IdentityProvider.Pages.Device;
 
 public class ViewModel
 {

@@ -9,8 +9,6 @@ namespace Globomantics.Controllers;
 public class ConferenceController(IConferenceRepository repo) : Controller {
     private readonly IConferenceRepository repo = repo;
 
-    
-
     public IActionResult Index()
     {
         ViewBag.Title = "Organizer - Conference Overview";

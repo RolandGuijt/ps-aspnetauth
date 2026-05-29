@@ -1,9 +1,5 @@
-﻿using Globomantics.Models;
-using Globomantics.Repositories;
-using IdentityProvider.Models;
-using Microsoft.EntityFrameworkCore.Infrastructure;
+﻿using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace IdentityProvider.Data.Migrations;
 

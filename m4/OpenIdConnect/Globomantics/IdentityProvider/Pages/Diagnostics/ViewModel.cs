@@ -1,6 +1,5 @@
-﻿using IdentityModel;
+﻿using System.Buffers.Text;
 using Microsoft.AspNetCore.Authentication;
-using System.Collections.Generic;
 using System.Text.Json;
 using System.Text;
 
@@ -17,7 +16,7 @@ public class ViewModel
         if (result.Properties.Items.ContainsKey("client_list"))
         {
             var encoded = result.Properties.Items["client_list"];
-            var bytes = Base64Url.Decode(encoded);
+            var bytes = Base64Url.DecodeFromChars(encoded);
             var value = Encoding.UTF8.GetString(bytes);
 
             Clients = JsonSerializer.Deserialize<string[]>(value);

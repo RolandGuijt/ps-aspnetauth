@@ -10,8 +10,6 @@ public class ProposalController(IConferenceRepository conferenceRepo, IProposalR
     private readonly IConferenceRepository conferenceRepo = conferenceRepo;
     private readonly IProposalRepository proposalRepo = proposalRepo;
 
-    
-
     public IActionResult Index(int conferenceId)
     {
         var conference = conferenceRepo.GetById(conferenceId);

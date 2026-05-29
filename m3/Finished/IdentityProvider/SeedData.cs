@@ -1,4 +1,4 @@
-﻿using IdentityModel;
+﻿using Duende.IdentityModel;
 using IdentityProvider.Data;
 using IdentityProvider.Models;
 using Microsoft.AspNetCore.Identity;

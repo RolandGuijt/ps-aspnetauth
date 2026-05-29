@@ -1,5 +1,6 @@
-﻿using Duende.Bff.Yarp;
-using Globomantics.Shared;
+﻿using Duende.Bff;
+using Duende.Bff.AccessTokenManagement;
+using Duende.Bff.Yarp;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication;
@@ -76,11 +77,10 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapDefaultControllerRoute();
-app.UseEndpoints(e => {
-    e.MapBffManagementEndpoints();
-    e.MapRemoteBffApiEndpoint("/api", "https://localhost:5002")
-        .RequireAccessToken();
-});
+app.MapBffManagementEndpoints();
+app.MapRemoteBffApiEndpoint("/api", new Uri("https://localhost:5002"))
+        .WithAccessToken();
+
 app.MapFallbackToFile("index.html");
 
 app.Run();

@@ -1,9 +1,4 @@
-﻿using Globomantics.Models;
-using Globomantics.Repositories;
-using IdentityProvider.Models;
-using System;
-
-namespace IdentityProvider.Pages.Login;
+﻿namespace IdentityProvider.Pages.Login;
 
 public class LoginOptions
 {

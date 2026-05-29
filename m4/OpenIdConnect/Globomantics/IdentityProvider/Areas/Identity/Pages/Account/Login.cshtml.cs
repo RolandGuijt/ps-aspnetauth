@@ -1,16 +1,10 @@
-﻿using Globomantics.Models;
-using Globomantics.Repositories;
+﻿using System.ComponentModel.DataAnnotations;
 using IdentityProvider.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using System;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace IdentityProvider.Areas.Identity.Pages.Account;
 

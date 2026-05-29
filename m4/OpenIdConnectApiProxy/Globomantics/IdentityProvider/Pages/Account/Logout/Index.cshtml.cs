@@ -1,14 +1,13 @@
-﻿using Duende.IdentityServer.Events;
+﻿using Duende.IdentityModel;
+using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Services;
-using IdentityModel;
 using IdentityProvider.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace IdentityProvider.Pages.Logout;
 
@@ -22,7 +21,6 @@ public class Index(SignInManager<ApplicationUser> signInManager, IIdentityServer
 
     [BindProperty] 
     public string LogoutId { get; set; }
-
     
 
     public async Task<IActionResult> OnGet(string logoutId)

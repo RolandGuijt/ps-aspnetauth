@@ -1,6 +1,4 @@
-﻿using Globomantics.Models;
-using Globomantics.Repositories;
-using System;
+﻿using System.Text.Json.Serialization;
 
 namespace Globomantics.Shared;
 

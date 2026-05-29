@@ -1,7 +1,6 @@
 ﻿using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer;
-using IdentityModel;
 using IdentityProvider.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Duende.IdentityModel;
 
 namespace IdentityProvider.Pages.ExternalLogin;
 
@@ -74,6 +74,7 @@ public class Callback(
         // this is typically used to store data needed for signout from those protocols.
         List<Claim> filtered = [];
         var localSignInProps = new AuthenticationProperties();
+        var additionalLocalClaims = new List<Claim>();
         CaptureExternalLoginContext(result, additionalLocalClaims, localSignInProps);
 
         // issue authentication cookie for user

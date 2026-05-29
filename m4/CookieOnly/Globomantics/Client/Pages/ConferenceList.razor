@@ -34,6 +34,8 @@
         <div class="col-md-4 col-md-offset-2">
             <a href="/addconference">Add</a>
         </div>
+        @if (claims is not null)
+        {
             <table class="table table-sm">
                 @foreach (var claim in claims)
                 {
@@ -43,6 +45,7 @@
                     </tr>
                 }
             </table>
+        }
     </div>
 </AuthorizeView>
 

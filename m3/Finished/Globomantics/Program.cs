@@ -1,5 +1,5 @@
 ﻿using Globomantics.Repositories;
-using IdentityModel;
+using Duende.IdentityModel;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication;
@@ -40,10 +40,7 @@ builder.Services.AddAuthentication(o =>
         options.ResponseType = "code";
         options.GetClaimsFromUserInfoEndpoint = true;
 
-        options.ClaimActions.MapUniqueJsonKey("careerstarted", "careerstarted");
-        options.ClaimActions.MapUniqueJsonKey("birthdate", "birthdate");
-        options.ClaimActions.MapUniqueJsonKey("role", "role");
-        options.ClaimActions.MapUniqueJsonKey("permission", "permission");
+        options.ClaimActions.MapAll();
 
         options.Events = new OpenIdConnectEvents
         {

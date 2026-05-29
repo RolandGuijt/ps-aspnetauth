@@ -1,7 +1,7 @@
 ﻿using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer;
-using IdentityModel;
+using Duende.IdentityModel;
 using IdentityProvider.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;

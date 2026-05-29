@@ -1,9 +1,7 @@
-﻿using Globomantics.Models;
-using Globomantics.Repositories;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System;
+﻿using System.Security.Claims;
+using System.Net.Http.Json;
+using Globomantics.Shared;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Globomantics.Client;
 

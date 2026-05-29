@@ -1,8 +1,4 @@
-﻿using Globomantics.Models;
-using Globomantics.Repositories;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System;
+﻿using Globomantics.Client.Models;
 
 namespace Globomantics.Client.ApiServices;
 

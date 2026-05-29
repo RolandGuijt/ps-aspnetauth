@@ -1,10 +1,10 @@
-﻿using IdentityModel;
-using IdentityProvider.Data;
+﻿using IdentityProvider.Data;
 using IdentityProvider.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System.Security.Claims;
+using Duende.IdentityModel;
 
 namespace IdentityProvider;
 

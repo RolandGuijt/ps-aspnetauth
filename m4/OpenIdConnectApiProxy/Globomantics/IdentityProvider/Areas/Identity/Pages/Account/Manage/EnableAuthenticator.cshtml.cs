@@ -1,7 +1,4 @@
-﻿
-using System.Globalization;
-using System.Text;using Globomantics.Models;
-using Globomantics.Repositories;
+﻿using System.Globalization;
 using IdentityProvider.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -11,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using System;
+using System.Text;
 
 namespace IdentityProvider.Areas.Identity.Pages.Account.Manage;
 

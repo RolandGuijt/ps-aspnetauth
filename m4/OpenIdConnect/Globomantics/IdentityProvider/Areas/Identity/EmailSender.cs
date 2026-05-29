@@ -1,9 +1,4 @@
-﻿using Globomantics.Models;
-using Globomantics.Repositories;
-using IdentityProvider.Models;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using System.Threading.Tasks;
-using System;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace IdentityProvider.Areas.Identity;
 

@@ -1,15 +1,13 @@
-﻿using Globomantics.Models;
-using Globomantics.Repositories;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Globomantics.Server.Pages;
 
 [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     [IgnoreAntiforgeryToken]
     public class ErrorModel(ILogger<ErrorModel> logger) : PageModel {
-        public string? RequestId { get; set; }
+        public string RequestId { get; set; }
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 

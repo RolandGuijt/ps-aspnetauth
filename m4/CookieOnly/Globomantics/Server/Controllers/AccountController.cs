@@ -3,10 +3,10 @@ using Globomantics.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using System;
+using Globomantics.Shared;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 
 namespace Globomantics.Server.Controllers;
 
@@ -33,12 +33,13 @@ public class AccountController(IUserRepository userRepository) : Controller {
             if (user == null)
                 return Unauthorized();
 
-            List<Claim> claims = [
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Name),
-            new Claim(ClaimTypes.Role, user.Role),
-            new Claim("FavoriteColor", user.FavoriteColor)
-        };
+            List<Claim> claims =
+            [
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Role, user.Role),
+                new Claim("FavoriteColor", user.FavoriteColor)
+            ];
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
@@ -90,7 +91,7 @@ public class AccountController(IUserRepository userRepository) : Controller {
             new Claim(ClaimTypes.Name, user.Name),
             new Claim(ClaimTypes.Role, user.Role),
             new Claim("FavoriteColor", user.FavoriteColor)
-        };
+        ];
 
             var identity = new ClaimsIdentity(claims,
                 CookieAuthenticationDefaults.AuthenticationScheme);

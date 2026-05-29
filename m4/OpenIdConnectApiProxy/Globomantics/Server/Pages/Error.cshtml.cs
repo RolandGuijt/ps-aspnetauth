@@ -1,8 +1,6 @@
-﻿using Globomantics.Models;
-using Globomantics.Repositories;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using System;
 
 namespace Globomantics.Server.Pages;
 

@@ -1,8 +1,4 @@
-﻿using Globomantics.Models;
-using Globomantics.Repositories;
-using System;
-
-namespace Globomantics.Models;
+﻿namespace Globomantics.Models;
 
 public class LoginModel
 {

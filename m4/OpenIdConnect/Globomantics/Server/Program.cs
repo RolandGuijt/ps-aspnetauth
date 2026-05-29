@@ -1,5 +1,5 @@
-﻿using Globomantics.Repositories;
-using Globomantics.Shared;
+﻿using Duende.Bff;
+using Globomantics.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication;
@@ -78,7 +78,7 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapDefaultControllerRoute();
-app.UseEndpoints(e => e.MapBffManagementEndpoints());
+app.MapBffManagementEndpoints();
 app.MapFallbackToFile("index.html");
 
 app.Run();
