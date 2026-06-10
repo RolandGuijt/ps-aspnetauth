@@ -19,6 +19,12 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             return Task.CompletedTask;
         };
     });
+    //Please add Google authentication configuration to the appsettings.json/user secrets file and uncomment
+    // .AddGoogle(o =>
+    // {
+    //     o.ClientId = builder.Configuration["GoogleClientId"];
+    //     o.ClientSecret = builder.Configuration["GoogleClientSecret"];
+    // });
 
 builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<IConferenceRepository, ConferenceRepository>();
