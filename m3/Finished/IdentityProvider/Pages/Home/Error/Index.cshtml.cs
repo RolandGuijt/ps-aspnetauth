@@ -16,12 +16,12 @@ public class Index(IIdentityServerInteractionService interaction, IWebHostEnviro
         
     
         
-    public async Task OnGet(string errorId)
+    public async Task OnGet(string errorId, CancellationToken ct)
     {
         View = new ViewModel();
 
         // retrieve error details from identityserver
-        var message = await _interaction.GetErrorContextAsync(errorId);
+        var message = await _interaction.GetErrorContextAsync(errorId, ct);
         if (message != null)
         {
             View.Error = message;

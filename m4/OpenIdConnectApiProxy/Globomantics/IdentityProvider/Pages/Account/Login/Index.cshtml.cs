@@ -36,9 +36,9 @@ public class Index(
         
     
         
-    public async Task<IActionResult> OnGet(string returnUrl)
+    public async Task<IActionResult> OnGet(string returnUrl, CancellationToken ct)
     {
-        await BuildModelAsync(returnUrl);
+        await BuildModelAsync(returnUrl, ct);
             
         if (View.IsExternalLoginOnly)
         {
@@ -49,10 +49,10 @@ public class Index(
         return Page();
     }
         
-    public async Task<IActionResult> OnPost()
+    public async Task<IActionResult> OnPost(CancellationToken cancellationToken)
     {
         // check if we are in the context of an authorization request
-        var context = await _interaction.GetAuthorizationContextAsync(Input.ReturnUrl);
+        var context = await _interaction.GetAuthorizationContextAsync(Input.ReturnUrl, cancellationToken);
 
         // the user clicked the "cancel" button
         if (Input.Button != "login")
@@ -62,7 +62,7 @@ public class Index(
                 // if the user cancels, send a result back into IdentityServer as if they 
                 // denied the consent (even if this client does not require consent).
                 // this will send back an access denied OIDC error response to the client.
-                await _interaction.DenyAuthorizationAsync(context, AuthorizationError.AccessDenied);
+                await _interaction.DenyAuthorizationAsync(context, InteractionError.AccessDenied, cancellationToken);
 
                 // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
                 if (context.IsNativeClient())
@@ -87,7 +87,6 @@ public class Index(
             if (result.Succeeded)
             {
                 var user = await _userManager.FindByNameAsync(Input.Username);
-                await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.Client.ClientId));
 
                 if (context != null)
                 {
@@ -117,24 +116,23 @@ public class Index(
                     throw new Exception("invalid return URL");
                 }
             }
-
-            await _events.RaiseAsync(new UserLoginFailureEvent(Input.Username, "invalid credentials", clientId:context?.Client.ClientId));
+            
             ModelState.AddModelError(string.Empty, LoginOptions.InvalidCredentialsErrorMessage);
         }
 
         // something went wrong, show form with error
-        await BuildModelAsync(Input.ReturnUrl);
+        await BuildModelAsync(Input.ReturnUrl, cancellationToken);
         return Page();
     }
         
-    private async Task BuildModelAsync(string returnUrl)
+    private async Task BuildModelAsync(string returnUrl, CancellationToken ct)
     {
         Input = new InputModel
         {
             ReturnUrl = returnUrl
         };
             
-        var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+        var context = await _interaction.GetAuthorizationContextAsync(returnUrl, ct);
         if (context?.IdP != null && await _schemeProvider.GetSchemeAsync(context.IdP) != null)
         {
             var local = context.IdP == Duende.IdentityServer.IdentityServerConstants.LocalIdentityProvider;
@@ -165,7 +163,7 @@ public class Index(
                 AuthenticationScheme = x.Name
             }).ToList();
 
-        var dyanmicSchemes = (await _identityProviderStore.GetAllSchemeNamesAsync())
+        var dyanmicSchemes = (await _identityProviderStore.GetAllSchemeNamesAsync(ct))
             .Where(x => x.Enabled)
             .Select(x => new ViewModel.ExternalProvider
             {

@@ -3,12 +3,12 @@ using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Validation;
+using Duende.IdentityModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Duende.IdentityModel;
 
 namespace IdentityProvider.Pages.Consent;
 
@@ -22,15 +22,17 @@ public class Index(
     private readonly IIdentityServerInteractionService _interaction = interaction;
     private readonly IEventService _events = events;
     private readonly ILogger<Index> _logger = logger;
+
     
+
     public ViewModel View { get; set; }
         
     [BindProperty]
     public InputModel Input { get; set; }
 
-    public async Task<IActionResult> OnGet(string returnUrl)
+    public async Task<IActionResult> OnGet(string returnUrl, CancellationToken ct)
     {
-        View = await BuildViewModelAsync(returnUrl);
+        View = await BuildViewModelAsync(returnUrl, ct);
         if (View == null)
         {
             return RedirectToPage("/Home/Error/Index");
@@ -44,10 +46,10 @@ public class Index(
         return Page();
     }
 
-    public async Task<IActionResult> OnPost()
+    public async Task<IActionResult> OnPost(CancellationToken ct)
     {
         // validate return url is still valid
-        var request = await _interaction.GetAuthorizationContextAsync(Input.ReturnUrl);
+        var request = await _interaction.GetAuthorizationContextAsync(Input.ReturnUrl, ct);
         if (request == null) return RedirectToPage("/Home/Error/Index");
 
         ConsentResponse grantedConsent = null;
@@ -55,10 +57,8 @@ public class Index(
         // user clicked 'no' - send back the standard 'access_denied' response
         if (Input?.Button == "no")
         {
-            grantedConsent = new ConsentResponse { Error = AuthorizationError.AccessDenied };
+            grantedConsent = new ConsentResponse { Error = InteractionError.AccessDenied };
 
-            // emit event
-            await _events.RaiseAsync(new ConsentDeniedEvent(User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues));
         }
         // user clicked 'yes' - validate the data
         else if (Input?.Button == "yes")
@@ -78,9 +78,6 @@ public class Index(
                     ScopesValuesConsented = scopes.ToArray(),
                     Description = Input.Description
                 };
-
-                // emit event
-                await _events.RaiseAsync(new ConsentGrantedEvent(User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues, grantedConsent.ScopesValuesConsented, grantedConsent.RememberConsent));
             }
             else
             {
@@ -95,7 +92,7 @@ public class Index(
         if (grantedConsent != null)
         {
             // communicate outcome of consent back to identityserver
-            await _interaction.GrantConsentAsync(request, grantedConsent);
+            await _interaction.GrantConsentAsync(request, grantedConsent, ct);
 
             // redirect back to authorization endpoint
             if (request.IsNativeClient() == true)
@@ -109,13 +106,13 @@ public class Index(
         }
 
         // we need to redisplay the consent UI
-        View = await BuildViewModelAsync(Input.ReturnUrl, Input);
+        View = await BuildViewModelAsync(Input.ReturnUrl, ct, Input);
         return Page();
     }
 
-    private async Task<ViewModel> BuildViewModelAsync(string returnUrl, InputModel model = null)
+    private async Task<ViewModel> BuildViewModelAsync(string returnUrl, CancellationToken ct, InputModel model = null)
     {
-        var request = await _interaction.GetAuthorizationContextAsync(returnUrl);
+        var request = await _interaction.GetAuthorizationContextAsync(returnUrl, ct);
         if (request != null)
         {
             return CreateConsentViewModel(model, returnUrl, request);

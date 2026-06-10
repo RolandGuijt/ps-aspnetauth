@@ -1,4 +1,7 @@
-﻿namespace IdentityProvider.Pages.Login;
+﻿using IdentityProvider.Models;
+using System;
+
+namespace IdentityProvider.Pages.Login;
 
 public class LoginOptions
 {

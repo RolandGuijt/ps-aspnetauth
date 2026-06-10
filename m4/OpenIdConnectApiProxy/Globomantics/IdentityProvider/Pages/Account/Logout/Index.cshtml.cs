@@ -1,13 +1,14 @@
-﻿using Duende.IdentityModel;
-using Duende.IdentityServer.Events;
+﻿using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Services;
+using Duende.IdentityModel;
 using IdentityProvider.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace IdentityProvider.Pages.Logout;
 
@@ -21,9 +22,10 @@ public class Index(SignInManager<ApplicationUser> signInManager, IIdentityServer
 
     [BindProperty] 
     public string LogoutId { get; set; }
+
     
 
-    public async Task<IActionResult> OnGet(string logoutId)
+    public async Task<IActionResult> OnGet(string logoutId, CancellationToken ct)
     {
         LogoutId = logoutId;
 
@@ -36,7 +38,7 @@ public class Index(SignInManager<ApplicationUser> signInManager, IIdentityServer
         }
         else
         {
-            var context = await _interaction.GetLogoutContextAsync(LogoutId);
+            var context = await _interaction.GetLogoutContextAsync(LogoutId, ct);
             if (context?.ShowSignoutPrompt == false)
             {
                 // it's safe to automatically sign-out
@@ -48,27 +50,24 @@ public class Index(SignInManager<ApplicationUser> signInManager, IIdentityServer
         {
             // if the request for logout was properly authenticated from IdentityServer, then
             // we don't need to show the prompt and can just log the user out directly.
-            return await OnPost();
+            return await OnPost(ct);
         }
 
         return Page();
     }
 
-    public async Task<IActionResult> OnPost()
+    public async Task<IActionResult> OnPost(CancellationToken ct)
     {
         if (User?.Identity.IsAuthenticated == true)
         {
             // if there's no current logout context, we need to create one
             // this captures necessary info from the current logged in user
             // this can still return null if there is no context needed
-            LogoutId ??= await _interaction.CreateLogoutContextAsync();
+            LogoutId ??= await _interaction.CreateLogoutContextAsync(ct);
                 
             // delete local authentication cookie
             await _signInManager.SignOutAsync();
-
-            // raise the logout event
-            await _events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
-
+            
             // see if we need to trigger federated logout
             var idp = User.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
 

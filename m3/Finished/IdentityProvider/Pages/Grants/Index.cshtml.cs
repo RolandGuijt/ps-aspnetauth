@@ -27,17 +27,17 @@ public class Index(IIdentityServerInteractionService interaction,
 
     public ViewModel View { get; set; }
         
-    public async Task OnGet()
+    public async Task OnGet(CancellationToken ct)
     {
-        var grants = await _interaction.GetAllUserGrantsAsync();
+        var grants = await _interaction.GetAllUserGrantsAsync(ct);
 
         List<GrantViewModel> list = [];
         foreach (var grant in grants)
         {
-            var client = await _clients.FindClientByIdAsync(grant.ClientId);
+            var client = await _clients.FindClientByIdAsync(grant.ClientId, ct);
             if (client != null)
             {
-                var resources = await _resources.FindResourcesByScopeAsync(grant.Scopes);
+                var resources = await _resources.FindResourcesByScopeAsync(grant.Scopes, ct);
 
                 var item = new GrantViewModel()
                 {
@@ -66,10 +66,9 @@ public class Index(IIdentityServerInteractionService interaction,
     [Required]
     public string ClientId { get; set; }
 
-    public async Task<IActionResult> OnPost()
+    public async Task<IActionResult> OnPost(CancellationToken ct)
     {
-        await _interaction.RevokeUserConsentAsync(ClientId);
-        await _events.RaiseAsync(new GrantsRevokedEvent(User.GetSubjectId(), ClientId));
+        await _interaction.RevokeUserConsentAsync(ClientId, ct);
 
         return RedirectToPage("/Grants/Index");
     }

@@ -1,6 +1,7 @@
 ﻿using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer;
+using Duende.IdentityModel;
 using IdentityProvider.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Duende.IdentityModel;
 
 namespace IdentityProvider.Pages.ExternalLogin;
 
@@ -31,7 +31,7 @@ public class Callback(
 
     
         
-    public async Task<IActionResult> OnGet()
+    public async Task<IActionResult> OnGet(CancellationToken ct)
     {
         // read external identity from the temporary cookie
         var result = await HttpContext.AuthenticateAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
@@ -72,9 +72,8 @@ public class Callback(
         // this allows us to collect any additional claims or properties
         // for the specific protocols used and store them in the local auth cookie.
         // this is typically used to store data needed for signout from those protocols.
-        List<Claim> filtered = [];
+        List<Claim> additionalLocalClaims = [];
         var localSignInProps = new AuthenticationProperties();
-        var additionalLocalClaims = new List<Claim>();
         CaptureExternalLoginContext(result, additionalLocalClaims, localSignInProps);
 
         // issue authentication cookie for user
@@ -87,9 +86,8 @@ public class Callback(
         var returnUrl = result.Properties.Items["returnUrl"] ?? "~/";
 
         // check if external login is in the context of an OIDC request
-        var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
-        await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.Id, user.UserName, true, context?.Client.ClientId));
-
+        var context = await _interaction.GetAuthorizationContextAsync(returnUrl, ct);
+        
         if (context != null)
         {
             if (context.IsNativeClient())
